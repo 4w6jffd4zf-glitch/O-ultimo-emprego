@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O Último Emprego</title>
+<style>
+body{margin:0;background:#101015;color:white;font-family:Arial,sans-serif;padding:25px}
+main{max-width:650px;margin:auto}
+h1{font-size:48px;color:#e50914}
+h2{font-size:27px}
+p{line-height:1.7;color:#ddd;font-size:17px}
+button{display:block;width:100%;padding:17px;margin:13px 0;background:#252530;color:white;border:1px solid #555;border-radius:9px;font-size:16px;text-align:left;cursor:pointer}
+button:hover{background:#e50914}
+.start{background:#e50914;text-align:center;font-weight:bold}
+small{color:#aaa}
+</style>
+</head>
+<body>
+<main>
+<div id="intro">
+<small>UMA EXPERIÊNCIA INTERATIVA • ANO 2045</small>
+<h1>O ÚLTIMO EMPREGO</h1>
+<p>Em 2045, a inteligência artificial transformou o mundo. Uma empresa precisa decidir: substituir todos os funcionários ou construir um futuro em que humanos e tecnologia trabalhem juntos?</p>
+<button class="start" onclick="start()">COMEÇAR JOGO →</button>
+</div>
+<div id="game" hidden>
+<small id="number"></small>
+<h2 id="title"></h2>
+<p id="story"></p>
+<div id="choices"></div>
+</div>
+<div id="end" hidden>
+<h2 id="result"></h2>
+<p id="message"></p>
+<p><b>A tecnologia deve trabalhar a favor das pessoas, não tornar as pessoas desnecessárias.</b></p>
+<button class="start" onclick="location.reload()">JOGAR NOVAMENTE ↻</button>
+</div>
+</main>
+<script>
+const scenes=[
+["A proposta","A empresa quer substituir todos os funcionários por robôs. Você precisa dar sua opinião.",["Substituir todos para aumentar o lucro","Manter os funcionários e usar a IA como apoio"]],
+["O atendimento","A inteligência artificial começou a cometer erros no atendimento aos clientes. O que fazer?",["Deixar a IA responder sozinha","Pedir que funcionários revisem os casos importantes"]],
+["No hospital","Um paciente está assustado e precisa de atenção. Como a equipe deve agir?",["Deixar todo o atendimento com a IA","Usar a IA como apoio e manter o profissional responsável pelo cuidado"]],
+["A decisão final","Chegou a hora de decidir o futuro da empresa.",["Criar uma empresa totalmente automatizada","Construir uma parceria entre humanos e inteligência artificial"]]
+];
+let i=0,score=0;
+function start(){intro.hidden=true;game.hidden=false;show()}
+function show(){
+number.textContent="DECISÃO "+(i+1)+" DE 4";
+title.textContent=scenes[i][0];
+story.textContent=scenes[i][1];
+choices.innerHTML="";
+scenes[i][2].forEach((v,n)=>{
+let b=document.createElement("button");
+b.textContent=v;
+b.onclick=()=>{score+=n===1?1:-1;i++;if(i<4)show();else finish()};
+choices.appendChild(b);
+});
+}
+function finish(){
+game.hidden=true;end.hidden=false;
+if(score>=2){
+result.textContent="O FUTURO É UMA PARCERIA!";
+message.textContent="Você defendeu um futuro em que a inteligência artificial ajuda os trabalhadores. A empresa investiu em tecnologia, capacitação e valorização das pessoas.";
+}else if(score<=-2){
+result.textContent="A AUTOMAÇÃO DOMINOU A EMPRESA.";
+message.textContent="A empresa ganhou velocidade, mas percebeu que máquinas não substituem completamente a criatividade, a empatia e o julgamento humano.";
+}else{
+result.textContent="UM FUTURO EM CONSTRUÇÃO.";
+message.textContent="A empresa percebeu que precisa equilibrar tecnologia e participação humana para alcançar bons resultados.";
+}
+}
+</script>
+</body>
+</html>
