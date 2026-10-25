@@ -1,0 +1,198 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O Último Emprego</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #101522;
+  color: #f2f4fa;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+.game {
+  width: 100%;
+  max-width: 650px;
+  background: #1c2638;
+  border: 1px solid #35435c;
+  border-radius: 18px;
+  padding: 30px;
+  box-shadow: 0 10px 40px #0006;
+}
+h1 { color: #76d7ff; text-align: center; }
+h2 { color: #a9ddff; }
+p { line-height: 1.7; color: #d5dbea; }
+.tag {
+  color: #91a9c9;
+  text-align: center;
+  font-size: 13px;
+  letter-spacing: 2px;
+}
+button {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  margin-top: 12px;
+  border: 1px solid #5b83ae;
+  border-radius: 10px;
+  background: #29476b;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+}
+button:hover { background: #3973a5; }
+#status { color: #8ee6c1; font-size: 13px; }
+.hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="game">
+  <div class="tag">UMA EXPERIÊNCIA INTERATIVA</div>
+  <h1>O ÚLTIMO EMPREGO</h1>
+
+  <div id="start">
+    <h2>O futuro chegou. E agora?</h2>
+    <p>
+      Ano de 2040. A inteligência artificial transformou o mercado
+      de trabalho. Máquinas realizam tarefas em poucos segundos,
+      empresas estão reduzindo equipes e milhões de pessoas precisam
+      encontrar um novo caminho.
+    </p>
+    <p>
+      Você é Alex, um jovem que acaba de receber uma notícia:
+      seu emprego foi substituído por uma inteligência artificial.
+      Suas escolhas vão definir seu futuro.
+    </p>
+    <button onclick="begin()">Começar o jogo</button>
+  </div>
+
+  <div id="scene" class="hidden">
+    <p id="status"></p>
+    <h2 id="title"></h2>
+    <p id="story"></p>
+    <div id="choices"></div>
+  </div>
+
+  <div id="ending" class="hidden">
+    <h2 id="endingTitle"></h2>
+    <p id="endingText"></p>
+    <button onclick="restart()">Jogar novamente</button>
+  </div>
+</div>
+
+<script>
+let phase = 0;
+let score = 0;
+
+const scenes = [
+{
+ title: "FASE 1 — A DEMISSÃO",
+ story: "Você chega ao trabalho e encontra uma mensagem do seu chefe: a empresa adotou uma IA capaz de realizar suas tarefas. Você não faz mais parte da equipe. O que você faz?",
+ choices: [
+  ["Procuro cursos para aprender novas habilidades.", 2],
+  ["Tento conversar com a empresa e buscar outra função.", 2],
+  ["Desisto de procurar trabalho por enquanto.", -1]
+ ]
+},
+{
+ title: "FASE 2 — UM NOVO CAMINHO",
+ story: "Depois de algumas semanas, você percebe que muitas profissões mudaram. Uma escola oferece cursos de tecnologia e criatividade. Qual será sua escolha?",
+ choices: [
+  ["Aprendo a trabalhar junto com a inteligência artificial.", 2],
+  ["Procuro uma profissão que dependa de habilidades humanas.", 2],
+  ["Ignoro as mudanças e continuo fazendo tudo como antes.", -1]
+ ]
+},
+{
+ title: "FASE 3 — A ENTREVISTA",
+ story: "Você consegue uma entrevista em uma empresa que utiliza IA. O entrevistador pergunta: por que deveríamos contratar uma pessoa se uma máquina pode fazer o trabalho?",
+ choices: [
+  ["Explico que criatividade, empatia e pensamento crítico também são importantes.", 2],
+  ["Digo que humanos e máquinas podem trabalhar juntos.", 2],
+  ["Respondo que a tecnologia nunca será útil.", -1]
+ ]
+},
+{
+ title: "FASE 4 — O FUTURO",
+ story: "Você recebe uma proposta para participar de um projeto que une pessoas e inteligência artificial. Porém, terá que aprender coisas novas e trabalhar em equipe. O que decide?",
+ choices: [
+  ["Aceito e busco me adaptar às novas tecnologias.", 2],
+  ["Aceito, mas defendo que as pessoas tenham direitos e oportunidades.", 2],
+  ["Recuso qualquer contato com a tecnologia.", -1]
+ ]
+}
+];
+
+function begin() {
+  document.getElementById("start").classList.add("hidden");
+  document.getElementById("scene").classList.remove("hidden");
+  showScene();
+}
+
+function showScene() {
+  const s = scenes[phase];
+  document.getElementById("status").textContent =
+    "ETAPA " + (phase + 1) + " DE 4";
+  document.getElementById("title").textContent = s.title;
+  document.getElementById("story").textContent = s.story;
+
+  const area = document.getElementById("choices");
+  area.innerHTML = "";
+
+  s.choices.forEach(choice => {
+    const btn = document.createElement("button");
+    btn.textContent = choice[0];
+    btn.onclick = () => selectChoice(choice[1]);
+    area.appendChild(btn);
+  });
+}
+
+function selectChoice(points) {
+  score += points;
+  phase++;
+
+  if (phase < scenes.length) {
+    showScene();
+  } else {
+    finish();
+  }
+}
+
+function finish() {
+  document.getElementById("scene").classList.add("hidden");
+  document.getElementById("ending").classList.remove("hidden");
+
+  let title, message;
+
+  if (score >= 7) {
+    title = "FINAL: UM FUTURO DE POSSIBILIDADES";
+    message = "Você entendeu que a tecnologia pode ser uma aliada. Ao desenvolver novas habilidades e defender a importância das pessoas, encontrou uma oportunidade de construir um futuro melhor. A IA mudou o trabalho, mas você encontrou seu espaço.";
+  } else if (score >= 4) {
+    title = "FINAL: RECOMEÇAR É PRECISO";
+    message = "Você percebeu que o mercado de trabalho está mudando e que a adaptação é importante. Ainda existem desafios pela frente, mas aprender e buscar oportunidades pode abrir novos caminhos.";
+  } else {
+    title = "FINAL: O DESAFIO DA MUDANÇA";
+    message = "Você teve dificuldades para acompanhar as transformações. O avanço da IA exige preparação, aprendizado e participação da sociedade para que ninguém fique para trás.";
+  }
+
+  document.getElementById("endingTitle").textContent = title;
+  document.getElementById("endingText").textContent = message;
+}
+
+function restart() {
+  phase = 0;
+  score = 0;
+  document.getElementById("ending").classList.add("hidden");
+  document.getElementById("start").classList.remove("hidden");
+}
+</script>
+</body>
+</html>
